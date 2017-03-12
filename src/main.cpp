@@ -4,7 +4,7 @@
 
 int main(int argc, const char *argv[])
 {
-	std::vector<std::string> args(argv, argv+argc);
+	std::vector<std::string> args(argv, argv + argc);
 	return Application::getInstance()->run(args);
 }
 

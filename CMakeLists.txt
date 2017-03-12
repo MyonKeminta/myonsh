@@ -23,6 +23,7 @@ check_include_files ("readline/readline.h;readline/history.h" HAS_GNU_READLINE)
 add_executable (myonsh
 	src/main.cpp
 	src/application.cpp
+	src/stream_source.cpp
 )
 
 
