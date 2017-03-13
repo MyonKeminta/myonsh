@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (myonsh)
 
-include (CheckIncludeFiles)
+#include (CheckIncludeFiles)
 
 set (myonsh_VERSION_MAJOR 0)
 set (myonsh_VERSION_MINOR 1)
@@ -18,12 +18,14 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set (CMAKE_INSTALL_PREFIX "")
 
-check_include_files ("readline/readline.h;readline/history.h" HAS_GNU_READLINE)
+#However I realized that GNU readline is under GPL
+#check_include_files ("readline/readline.h;readline/history.h" HAS_GNU_READLINE)
+
+file (GLOB headers src/*.h)
+file (GLOB sources src/*.c src/*.cpp)
 
 add_executable (myonsh
-	src/main.cpp
-	src/application.cpp
-	src/stream_source.cpp
+        ${headers}
+        ${sources}
 )
-
 

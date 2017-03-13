@@ -1,2 +1,2 @@
-#cmakedefine HAS_GNU_READLINE
+//#cmakedefine HAS_GNU_READLINE
 

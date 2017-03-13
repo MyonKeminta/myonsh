@@ -5,23 +5,23 @@
 #include <string>
 #include "script_source.h"
 
-#ifdef HAS_GNU_READLINE
+//#ifdef HAS_GNU_READLINE
 
 
 
-#include "cinclude/creadline.h"
+//#include "cinclude/creadline.h"
 
-class InteractiveSource : public ScriptSource
-{
-public:
-	InteractiveSource();
+// class InteractiveSource : public ScriptSource
+// {
+// public:
+// 	InteractiveSource();
 	
-	bool getLine(std::string &str) override;
-};
+// 	bool getLine(std::string &str) override;
+// };
 
 
 
-#else //HAS_GNU_READLINE
+// #else //HAS_GNU_READLINE
 
 
 
@@ -46,7 +46,7 @@ private:
 
 
 
-#endif //HAS_GNU_READLINE
+//#endif //HAS_GNU_READLINE
 
 
 #endif //INTERACTIVE_SOURCE_H
