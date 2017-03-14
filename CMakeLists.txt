@@ -21,7 +21,7 @@ set (CMAKE_INSTALL_PREFIX "")
 #However I realized that GNU readline is under GPL
 #check_include_files ("readline/readline.h;readline/history.h" HAS_GNU_READLINE)
 
-file (GLOB headers src/*.h)
+file (GLOB headers src/*.h src/cinclude/*.h)
 file (GLOB sources src/*.c src/*.cpp)
 
 add_executable (myonsh

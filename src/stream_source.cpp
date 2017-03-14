@@ -6,10 +6,16 @@ StreamSource::StreamSource() : stream(nullptr) {}
 
 StreamSource::StreamSource(std::istream &is) : stream(&is) {}
 
-bool StreamSource::getLine(std::string &str)
+//bool StreamSource::getLine(std::string &str)
+//{
+//	str.clear();
+//	return std::getline(*stream, str).good();
+//}
+
+bool StreamSource::getChar(char &c)
 {
-	str.clear();
-	return std::getline(*stream, str).good();
+	c = stream->get();
+	return stream->good();
 }
 
 void StreamSource::setStream(std::istream &is)

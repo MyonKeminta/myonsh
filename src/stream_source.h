@@ -10,9 +10,10 @@ class StreamSource : public ScriptSource
 {
 public:
 	StreamSource();
-	StreamSource(std::istream &is);
+	explicit StreamSource(std::istream &is);
 
-	bool getLine(std::string &str) override;
+//	bool getLine(std::string &str) override;
+	bool getChar(char &c) override;
 
 	std::istream &getStream() { return *stream; }
 	const std::istream &getStream() const { return *stream; }

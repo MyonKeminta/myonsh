@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstdlib>
 #include <unordered_map>
-#include "utils.h"
+//#include "utils.h"
 
 
 class Environment
@@ -41,10 +41,10 @@ public:
 
 
 	// Global variables
+	// Moved into class Context, which is not singleton
+	//const StringMap &getGlobalVariableDictionary() const;
 	
-	const StringMap &getGlobalVariableDictionary() const;
-	
-	StringMap &getGlobalVariableDictionary();
+	//StringMap &getGlobalVariableDictionary();
 
 
 	
@@ -61,8 +61,8 @@ public:
 
 
 	// Prompt
-
-	std::string getPrompt() const;
+	// Moved into class Context, which is not singleton
+	//std::string getPrompt() const;
 
 
 
@@ -71,7 +71,7 @@ public:
 private:
 	static Environment *instance;
 
-	StringMap globalDict;
+	//StringMap globalDict;
 	
 };
 

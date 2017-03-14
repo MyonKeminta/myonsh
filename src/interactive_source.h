@@ -4,6 +4,7 @@
 #include <myonsh_config.h>
 #include <string>
 #include "script_source.h"
+#include "context.h"
 
 //#ifdef HAS_GNU_READLINE
 
@@ -28,20 +29,45 @@
 #include <iostream>
 #include "stream_source.h"
 
+
 class InteractiveSource : public StreamSource
 {
 public:
-	InteractiveSource();
+	explicit InteractiveSource(Context &context)
+		: InteractiveSource(context, std::cin) {}
 
-	bool getLine(std::string &str) override
+	InteractiveSource(Context &context, std::istream &is)
+		: context(&context), StreamSource(is) {}
+
+//	bool getLine(std::string &str) override
+//	{
+//		printPrompt();
+//		if (StreamSource::getLine(str))
+//		{
+//			tryExpandAlias(str);
+//			return true;
+//		}
+//		return false;
+//	}
+	bool getChar(char &c) override
 	{
-		printPrompt();
-		return StreamSource::getLine(str);
+		if(newLine)
+			printPrompt();
+
+		bool result = StreamSource::getChar(c);
+		newLine = '\n' == c;
+		return result;
 	}
 
 
 private:
 	void printPrompt();
+
+	void tryExpandAlias(std::stirng &str);
+
+	bool newLine = true;
+
+	Context *context;
 };
 
 
