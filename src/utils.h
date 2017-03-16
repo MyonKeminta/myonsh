@@ -6,6 +6,9 @@
 #include <string>
 #include <deque>
 #include <iostream>
+#include "cinclude/cerrno.h"
+#include <cstdio>
+
 
 typedef std::unordered_map<std::string, std::string> StringMap;
 
@@ -14,12 +17,32 @@ typedef std::deque<std::string> StringList;
 
 class Log
 {
+public:
+
+	// Static classes do not need any constructor
+	Log() = delete;
+
 	// TODO: Finish Log class
 	static void LogError(const std::string &content)
 	{
 		std::string str = "-myonsh: " + content +"\n";
 		std::cerr << str;
 	}
+
+	static void LogErrorByErrno(const char *s)
+	{
+		::perror(s);
+	}
+
+};
+
+class Utils
+{
+public:
+
+	//.
+	Utils() = delete;
+
 
 };
 

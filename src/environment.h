@@ -1,19 +1,21 @@
 #ifndef ENVIRONMENT_MANAGER
 #define ENVIRONMENT_MANAGER
 
-#include "cinclude/cunistd.h"
 #include <string>
 #include <stack>
 #include <vector>
-#include <cstdlib>
-#include <unordered_map>
-//#include "utils.h"
+//#include <cstdlib>
+//#include <unordered_map>
+#include "utils.h"
 
 
 class Environment
 {
 public:
+
 	static Environment getInstance();
+
+	static void initWithArgs(const std::vector<std::string> &args);
 
 
 	// Environmental variables
@@ -24,6 +26,20 @@ public:
 	}
 
 	std::string getEnv(const char *name) const;
+
+	bool hasEnv(const std::string &name) const
+	{
+		return hasEnv(name.c_str());
+	}
+
+	bool hasEnv(const char *name) const;
+
+	bool tryGetEnv(const std::stirng &name, std::string &dest) const
+	{
+		return tryGetEnv(name.c_str(), dest);
+	}
+
+	bool tryGetEnv(const char *name, std::string &dest) const;
 
 	void setEnv(const std::string &name, const std::string &value) 
 	{
@@ -50,14 +66,14 @@ public:
 	
 	// Path
 
-	std::vector<std::string> getSystemPath() const;
+	StringList getSystemPath() const;
 
 
 	// Pwd
 
-	void chdir(const std::string &path) { chdir(path.c_str()); }
+	int chdir(const std::string &path) { return chdir(path.c_str()); }
 
-	void chdir(const char *path);
+	int chdir(const char *path);
 
 
 	// Prompt
@@ -65,13 +81,34 @@ public:
 	//std::string getPrompt() const;
 
 
+	// UID
+
+	int getUid() const;
+
+	int getEuid() const;
+
+	std::string getPwd() const;
+
+	std::string getHostName() const;
+
+	std::string getUserName() const;
+
+	std::string getHome() const;
+
+
+	const std::vector<std::string> &getArgs() const;
 
 
 
 private:
 	static Environment *instance;
 
+//	Environment();
+	Environment(const std::vector<std::stirng> &args);
+
 	//StringMap globalDict;
+
+	std::vector<std::string> args;
 	
 };
 

@@ -28,4 +28,3 @@ add_executable (myonsh
         ${headers}
         ${sources}
 )
-

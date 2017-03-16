@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <string>
 #include <stack>
+#include "environment.h"
 
 
 
@@ -25,6 +26,10 @@ private:
 
 class Context
 {
+public:
+
+	enum Status { Ready, Hanging };
+
 public:
 
 	Context();
@@ -47,6 +52,8 @@ public:
 
 	std::string getVar(const std::string &name) const;
 
+	bool hasVar(const std::string &name) const;
+
 	void setVar(const std::string &name, const std::string &value);
 
 	void unset(const std::string &name);
@@ -54,7 +61,17 @@ public:
 	void exportVar(const std::string &name);
 
 
+	Status getStatus() const;
 
+	void setStatus(const Status &value);
+
+
+	void initInteractiveContext();
+
+
+protected:
+
+	std::string parsePrompt(const std::string &ps);
 
 private:
 
@@ -66,7 +83,13 @@ private:
 
 	StringMap aliasDictionary;
 
+	bool interactive = false;
 
+	Status status;
+
+	Environment *environment;
+
+	int lastExitCode = 0;
 };
 
 

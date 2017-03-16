@@ -1,7 +1,7 @@
 #ifndef INTERACTIVE_SOURCE_H
 #define INTERACTIVE_SOURCE_H
 
-#include <myonsh_config.h>
+//#include <myonsh_config.h>
 #include <string>
 #include "script_source.h"
 #include "context.h"
@@ -61,9 +61,13 @@ public:
 
 
 private:
-	void printPrompt();
 
-	void tryExpandAlias(std::stirng &str);
+	void printPrompt()
+	{
+		std::cout << context->getPrompt() << std::flush;
+	}
+
+//	void tryExpandAlias(std::stirng &str);
 
 	bool newLine = true;
 

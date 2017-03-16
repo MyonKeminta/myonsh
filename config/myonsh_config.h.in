@@ -1,2 +1,29 @@
+#ifndef CMAKE_MYONSH_CONFIG_H
+#define CMAKE_MYONSH_CONFIG_H
+
+
 //#cmakedefine HAS_GNU_READLINE
 
+//#cmakedefine myonsh_VERSION_MAJOR
+
+//#cmakedefine myonsh_VERSION_MINOR
+
+
+#define VERSION_MAJOR ${myonsh_VERSION_MAJOR}
+
+#define VERSION_MINOR ${myonsh_VERSION_MINOR}
+
+#define PROJECT_NAME "${PROJECT_NAME}"
+
+
+#define DEFAULT_PS1 "\s-\v\$ "
+
+#define DEFAULT_PS2 "> "
+
+#define DEFAULT_PS3 ""
+
+#define DEFAULT_PS4 "+ "
+
+
+
+#endif
