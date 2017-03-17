@@ -20,19 +20,29 @@ public:
 
 	virtual ~ScriptInterpreter() {}
 
-	void executeString(const std::string &cmd);
+	int executeString(const std::string &cmd);
 
-	void interactive();
+	int interactive();
+
+
 	
 private:
 
-//	void run();
+	void sourceAnotherFile(const StringList &args);
+
+	void alias(const StringList &args);
+
+	void cd(const StringList &args);
+
+	void run(const StringList &cmd);
+
+	void runFromScriptSource(ScriptSource &source, bool isInteractive = false);
 
 	StringList currentCommand;
 
 	Context context;
 
-	std::stack<ScriptSource> sourceStack;
+//	std::stack<ScriptSource> sourceStack;
 
 };
 

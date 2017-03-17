@@ -31,7 +31,7 @@ public:
 
 	static void LogErrorByErrno(const char *s)
 	{
-		::perror(s);
+		::perror((std::string("-myonsh: ") + s).c_str());
 	}
 
 };
@@ -47,4 +47,4 @@ public:
 };
 
 
-#endif UTILS_H
+#endif //UTILS_H

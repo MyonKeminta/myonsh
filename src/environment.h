@@ -13,7 +13,7 @@ class Environment
 {
 public:
 
-	static Environment getInstance();
+	static Environment *getInstance();
 
 	static void initWithArgs(const std::vector<std::string> &args);
 
@@ -34,7 +34,7 @@ public:
 
 	bool hasEnv(const char *name) const;
 
-	bool tryGetEnv(const std::stirng &name, std::string &dest) const
+	bool tryGetEnv(const std::string &name, std::string &dest) const
 	{
 		return tryGetEnv(name.c_str(), dest);
 	}
@@ -96,6 +96,9 @@ public:
 	std::string getHome() const;
 
 
+	bool isInputRedirected() const;
+
+
 	const std::vector<std::string> &getArgs() const;
 
 
@@ -104,7 +107,7 @@ private:
 	static Environment *instance;
 
 //	Environment();
-	Environment(const std::vector<std::stirng> &args);
+	explicit Environment(const std::vector<std::string> &args);
 
 	//StringMap globalDict;
 

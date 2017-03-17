@@ -33,10 +33,10 @@
 class InteractiveSource : public StreamSource
 {
 public:
-	explicit InteractiveSource(Context &context)
+	explicit InteractiveSource(const Context &context)
 		: InteractiveSource(context, std::cin) {}
 
-	InteractiveSource(Context &context, std::istream &is)
+	InteractiveSource(const Context &context, std::istream &is)
 		: context(&context), StreamSource(is) {}
 
 //	bool getLine(std::string &str) override
@@ -71,7 +71,7 @@ private:
 
 	bool newLine = true;
 
-	Context *context;
+	const Context *context;
 };
 
 

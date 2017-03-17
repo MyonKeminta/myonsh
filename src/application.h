@@ -25,7 +25,7 @@ private:
 	//Trap SIGINT signal if interactive
 	//Initialize interpreter
 	//Initialize text provider
-	void initialize();
+	void initialize() {}
 
 	//Untrap signals
 	//Unload what have to unload
@@ -34,7 +34,7 @@ private:
 
 	bool interactive;
 
-	int execute(const std::string &scriptPath, const std::vector<std::string> &args);
+//	int execute(const std::string &scriptPath, const std::vector<std::string> &args);
 
 
 

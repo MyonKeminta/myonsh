@@ -9,9 +9,9 @@
 #include "utils.h"
 
 
-Environment Environment::instance = nullptr;
+Environment *Environment::instance = nullptr;
 
-Environment Environment::getInstance()
+Environment *Environment::getInstance()
 {
 	return instance;
 }
@@ -33,7 +33,7 @@ void Environment::initWithArgs(const std::vector<std::string> &args)
 
 //}
 
-Environment::Environment(const std::vector<std::stirng> &args)
+Environment::Environment(const std::vector<std::string> &args)
 	: args(args)
 {
 
@@ -68,8 +68,9 @@ void Environment::unsetEnv(const char *name)
 
 StringList Environment::getSystemPath() const
 {
-	const char *begin = getEnv("PATH");
-	const char *end = begin + strlen(begin);
+	std::string path = getEnv("PATH");
+	auto begin = path.begin();
+	auto end = path.end();
 	StringList list;
 	while (true)
 	{
@@ -150,6 +151,18 @@ std::string Environment::getUserName() const
 std::string Environment::getHome() const
 {
 	return getEnv("HOME");
+}
+
+
+bool Environment::isInputRedirected() const
+{
+	return !::isatty(0);
+}
+
+
+const std::vector<std::string> &Environment::getArgs() const
+{
+	return args;
 }
 
 

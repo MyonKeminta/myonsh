@@ -100,7 +100,7 @@ std::string Context::getVar(const std::string &name) const
 	auto it = globalVariableDict.find(name);
 	if (it != globalVariableDict.end())
 		return it->second;
-	return *env = environment->getEnv(name);
+	return environment->getEnv(name);
 }
 
 bool Context::hasVar(const std::string &name) const
@@ -148,7 +148,7 @@ void Context::exportVar(const std::string &name)
 
 
 
-std::string Context::parsePrompt(const std::string &ps)
+std::string Context::parsePrompt(const std::string &ps) const
 {
 	std::string result;
 

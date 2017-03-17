@@ -16,7 +16,7 @@
 #define PROJECT_NAME "${PROJECT_NAME}"
 
 
-#define DEFAULT_PS1 "\s-\v\$ "
+#define DEFAULT_PS1 "\\s-\\v\\$ "
 
 #define DEFAULT_PS2 "> "
 

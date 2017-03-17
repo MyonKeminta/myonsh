@@ -68,10 +68,14 @@ public:
 
 	void initInteractiveContext();
 
+	int getLastExitCode() const { return lastExitCode; }
+
+	void setLastExitCode(int value) { lastExitCode = value; }
+
 
 protected:
 
-	std::string parsePrompt(const std::string &ps);
+	std::string parsePrompt(const std::string &ps) const;
 
 private:
 
