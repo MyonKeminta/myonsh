@@ -9,7 +9,9 @@
 #include "context.h"
 #include "preprocessor.h"
 #include <cerrno>
+#include <cassert>
 #include <regex>
+#include "cinclude/cunistd.h"
 
 
 ScriptInterpreter::ScriptInterpreter() {}
@@ -21,12 +23,17 @@ int ScriptInterpreter::executeString(const std::string &cmd)
 	return context.getLastExitCode();
 }
 
-int ScriptInterpreter::interactive()
+int ScriptInterpreter::interactive(const std::string &initCmd)
 {
 //	sourceStack.push(InteractiveSource(context));
+	context.initInteractiveContext();
+	if (!initCmd.empty())
+		executeString(initCmd);
 	InteractiveSource source(context);
 	runFromScriptSource(source, true);
-	return context.getLastExitCode();
+	int result = context.getLastExitCode();
+	std::cout << "exit" << std::endl;
+	return result;
 }
 
 void ScriptInterpreter::sourceAnotherFile(const StringList &cmd)
@@ -50,6 +57,7 @@ void ScriptInterpreter::sourceAnotherFile(const StringList &cmd)
 
 void ScriptInterpreter::alias(const StringList &args)
 {
+	int exitCode = 0;
 	if (args.size() <= 1)
 	{
 		auto dict = context.getAliasDictionary();
@@ -59,40 +67,72 @@ void ScriptInterpreter::alias(const StringList &args)
 					  << pair.second <<'\'' << std::endl;
 		}
 	}
-	else if (args[1].find('=') == std::string::npos)
-	{
-		auto it = context.getAliasDictionary().find(args[1]);
-		if (it == context.getAliasDictionary().end())
-		{
-			Log::LogError("alias: " + args[1] +": not found");
-			context.setLastExitCode(1);
-			return;
-		}
-		else
-		{
-			std::cout << "alias " << it->first << "='"
-					  << it->second << '\'' << std::endl;
-		}
-	}
 	else
 	{
-		unsigned split = 0;
-		while (args[1][split] != '=')
-			++split;
-		std::string name(args[1].begin(), args[1].begin() + split);
-		if (!std::regex_match(name, std::regex("[a-zA-Z_][a-zA-Z0-9_]*")))
+		for (unsigned i = 1; i < args.size(); ++i)
 		{
-			Log::LogError("alias: " + name + ": invalid alias");
-			context.setLastExitCode(1);
-			return;
-		}
-		else
-		{
-			context.getAliasDictionary()[name] =
-					std::string(args[1].begin() + split + 1, args[1].end());
+			auto arg = Utils::splitOnce(args[i], '=');
+			assert(arg.size() >= 1);
+			if (std::regex_match(arg[0], Utils::getIdentifierRegex()))
+			{
+				if (arg.size() > 1)
+					context.getAliasDictionary()[arg[0]] = arg[1];
+				else
+				{
+					auto it = context.getAliasDictionary().find(arg[0]);
+					if (it == context.getAliasDictionary().end())
+					{
+						Log::LogError("alias: " + arg[0] + ": not found");
+						exitCode = 1;
+					}
+					else
+					{
+						std::cout << "alias" << it->first << "='"
+								  << it->second << '\'' << std::endl;
+					}
+				}
+			}
+			else
+			{
+				Log::LogError("alias: " + arg[0] + ": invalid alias");
+				exitCode = 1;
+			}
 		}
 	}
-	context.setLastExitCode(0);
+//	else if (args[1].find('=') == std::string::npos)
+//	{
+//		auto it = context.getAliasDictionary().find(args[1]);
+//		if (it == context.getAliasDictionary().end())
+//		{
+//			Log::LogError("alias: " + args[1] +": not found");
+//			context.setLastExitCode(1);
+//			return;
+//		}
+//		else
+//		{
+//			std::cout << "alias " << it->first << "='"
+//					  << it->second << '\'' << std::endl;
+//		}
+//	}
+//	else
+//	{
+//		unsigned split = 0;
+//		while (args[1][split] != '=')
+//			++split;
+//		std::string name(args[1].begin(), args[1].begin() + split);
+//		if (!std::regex_match(name, std::regex("[a-zA-Z_][a-zA-Z0-9_]*")))
+//		{
+//			Log::LogError("alias: " + name + ": invalid alias");
+//			context.setLastExitCode(1);
+//			return;
+//		}
+//		else
+//		{
+//			context.getAliasDictionary()[name] =
+//					std::string(args[1].begin() + split + 1, args[1].end());
+//		}
+//	}
+	context.setLastExitCode(exitCode);
 }
 
 void ScriptInterpreter::cd(const StringList &args)
@@ -129,6 +169,70 @@ void ScriptInterpreter::cd(const StringList &args)
 		context.setLastExitCode(0);
 }
 
+void ScriptInterpreter::exportVar(const StringList &args)
+{
+	int exitCode = 0;
+	for (unsigned i = 1; i < args.size(); ++i)
+	{
+		auto arg = Utils::splitOnce(args[i], '=');
+		assert(arg.size() >= 1);
+		if (std::regex_match(arg[0], Utils::getIdentifierRegex()))
+		{
+			context.exportVar(arg[0]);
+		}
+		else
+		{
+			Log::LogError("export: " + arg[0] + ": not a valid identifier");
+			exitCode = 1;
+		}
+	}
+
+	context.setLastExitCode(exitCode);
+}
+
+void ScriptInterpreter::eval(const StringList &args)
+{
+	int exitCode = 0;
+	auto arg = Utils::splitOnce(args[1], '=');
+	assert(arg.size() >= 1);
+	if (arg.size() > 1 && std::regex_match(arg[0], Utils::getIdentifierRegex()))
+	{
+		context.setVar(arg[0], arg[1]);
+	}
+	else
+	{
+		//TODO::Implement this/ execp
+		Log::LogError("eval: feature not implemented");
+		exitCode = 1;
+	}
+
+	context.setLastExitCode(exitCode);
+}
+
+void ScriptInterpreter::createProcess(const char *path, const char * const *args, bool noawait)
+{
+	pid_t pid = ::fork();
+	if (pid)
+	{
+		if (!noawait)
+		{
+			int status;
+			::waitpid(pid, &status, 0);
+			context.setLastExitCode(WEXITSTATUS(status));
+		}
+		else
+			context.setLastExitCode(0);
+	}
+	else
+	{
+		Environment::getInstance()->doUntrap();
+		execvp(path, (char * const *)args);
+		int err = errno;
+		Log::LogErrorByErrno((std::string(path) + ": ").c_str());
+		exit(err);
+	}
+}
+
 
 void ScriptInterpreter::run(const StringList &cmd)
 {
@@ -149,13 +253,33 @@ void ScriptInterpreter::run(const StringList &cmd)
 	{
 		cd(cmd);
 	}
-	else if (first.find('/') == std::string::npos)
+	else if (first == "export")
 	{
-		// execp
+		exportVar(cmd);
+	}
+	else if (first == "eval")
+	{
+		eval(cmd);
 	}
 	else
 	{
-		// exec
+		unsigned size = cmd.size();
+		bool noawait = cmd.back() == "&";
+		if (noawait)
+			--size;
+		if (!size)
+		{
+			Log::LogError("unexpected symbol &");
+			context.setLastExitCode(2);
+			return;
+		}
+		typedef const char *pchar;
+		auto args = new pchar[size + 1];
+		for (unsigned i = 0; i < size; ++i)
+			args[i] = cmd[i].c_str();
+		args[size] = nullptr;
+		createProcess(args[0], args);
+		delete[] args;
 	}
 
 }

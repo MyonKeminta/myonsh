@@ -7,6 +7,7 @@
 #include <cstring>
 #include <algorithm>
 #include "utils.h"
+#include <csignal>
 
 
 Environment *Environment::instance = nullptr;
@@ -41,7 +42,8 @@ Environment::Environment(const std::vector<std::string> &args)
 
 std::string Environment::getEnv(const char *name) const
 {
-	return ::getenv(name);
+	const char *result = ::getenv(name);
+	return result ? result : "";
 }
 
 bool Environment::hasEnv(const char *name) const
@@ -97,7 +99,8 @@ int Environment::chdir(const char *path)
 		return e;
 	}
 	setEnv("OLDPWD", getEnv("PWD").c_str());
-	setEnv("PWD", path);
+	setEnv("PWD", reGetPwd().c_str());
+
 	return 0;
 }
 
@@ -132,7 +135,7 @@ std::string Environment::getHostName() const
 {
 	unsigned size = 64;
 	char *str = new char[size];
-	while (!::gethostname(str, size))
+	while (::gethostname(str, size))
 	{
 		delete str;
 		str = new char[size*=2];
@@ -163,6 +166,34 @@ bool Environment::isInputRedirected() const
 const std::vector<std::string> &Environment::getArgs() const
 {
 	return args;
+}
+
+
+void Environment::doTrap()
+{
+	signal(SIGINT, SIG_IGN);
+}
+
+void Environment::doUntrap()
+{
+	signal(SIGINT, SIG_DFL);
+}
+
+
+
+std::string Environment::reGetPwd() const
+{
+	unsigned size = 64;
+	char *str = new char[size];
+	while (!::getcwd(str, size))
+	{
+		delete str;
+		str = new char[size*=2];
+	}
+
+	std::string result(str);
+	delete str;
+	return result;
 }
 
 

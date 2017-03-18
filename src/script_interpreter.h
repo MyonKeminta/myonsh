@@ -22,7 +22,7 @@ public:
 
 	int executeString(const std::string &cmd);
 
-	int interactive();
+	int interactive(const std::string &initCmd);
 
 
 	
@@ -33,6 +33,12 @@ private:
 	void alias(const StringList &args);
 
 	void cd(const StringList &args);
+
+	void exportVar(const StringList &args);
+
+	void eval(const StringList &args);
+
+	void createProcess(const char *path, const char *const *args, bool noawait = false);
 
 	void run(const StringList &cmd);
 

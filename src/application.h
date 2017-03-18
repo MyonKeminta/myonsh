@@ -21,16 +21,16 @@ private:
 	//Singleton instance handler
 	static Application *instance;
 
-	//Initialize environment:
-	//Trap SIGINT signal if interactive
-	//Initialize interpreter
-	//Initialize text provider
-	void initialize() {}
+//	//Initialize environment:
+//	//Trap SIGINT signal if interactive
+//	//Initialize interpreter
+//	//Initialize text provider
+//	void initialize() {}
 
-	//Untrap signals
-	//Unload what have to unload
-	//Prepare for exec
-	void retire();
+//	//Untrap signals
+//	//Unload what have to unload
+//	//Prepare for exec
+//	void retire();
 
 	bool interactive;
 

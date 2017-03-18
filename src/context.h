@@ -89,7 +89,7 @@ private:
 
 	bool interactive = false;
 
-	Status status;
+	Status status = Ready;
 
 	Environment *environment;
 

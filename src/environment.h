@@ -89,6 +89,7 @@ public:
 
 	std::string getPwd() const;
 
+
 	std::string getHostName() const;
 
 	std::string getUserName() const;
@@ -102,9 +103,14 @@ public:
 	const std::vector<std::string> &getArgs() const;
 
 
+	void doTrap();
+
+	void doUntrap();
 
 private:
 	static Environment *instance;
+
+	std::string reGetPwd() const;
 
 //	Environment();
 	explicit Environment(const std::vector<std::string> &args);

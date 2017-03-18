@@ -6,6 +6,7 @@
 #include "interactive_source.h"
 #include "stream_source.h"
 #include "utils.h"
+#include "cinclude/cunistd.h"
 
 Application *Application::instance = nullptr;
 
@@ -20,7 +21,8 @@ int Application::run(const std::vector<std::string> &args)
 {
 	Environment::initWithArgs(args);
 
-	interactive = !Environment::getInstance()->isInputRedirected();
+//	interactive = !Environment::getInstance()->isInputRedirected();
+	interactive = true;
 
 	std::string file;
 
@@ -47,15 +49,21 @@ int Application::run(const std::vector<std::string> &args)
 		}
 	}
 
-	initialize();
+//	initialize();
+	if (interactive)
+		Environment::getInstance()->doTrap();
 
 	ScriptInterpreter interpreter;
 
 	if (interactive)
 	{
 		file = Environment::getInstance()->getHome() + "/.myonshrc";
-		interpreter.executeString("source " + file);
-		return interpreter.interactive();
+		std::string command;
+		if (!::access(file.c_str(), R_OK))
+			command = "source " + file;
+		else
+			command = "";
+		return interpreter.interactive(command);
 	}
 	else
 	{

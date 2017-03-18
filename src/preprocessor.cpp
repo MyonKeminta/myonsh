@@ -89,7 +89,7 @@ StringList Preprocessor::process(const std::string &_cmd)
 				{
 					current.push_back(cmd[i++]);
 				}
-				assert(i < cmd.size() && i < cmd[i] == '\'');
+				assert(i < cmd.size() && cmd[i] == '\'');
 				++i;
 			}
 			else if (cmd[i] == '\\')
@@ -217,7 +217,7 @@ bool Preprocessor::getLine(std::string &str)
 
 	while (true)
 	{
-		assert(context->getStatus() == Context::Ready);
+		assert(context->getStatus() == Context::Ready || isInStr);
 		char c;
 		if (!getChar(c) /*|| c == '\n'*/)
 			break;
@@ -267,6 +267,8 @@ bool Preprocessor::getLine(std::string &str)
 		}
 		else if (c == '\\')
 		{
+			if (!isInStr)
+				context->setStatus(Context::Hanging);
 			if (getChar(c))
 			{
 				if (c == '\n')
@@ -274,6 +276,8 @@ bool Preprocessor::getLine(std::string &str)
 				else
 					result.push_back(c);
 			}
+			if (!isInStr)
+				context->setStatus(Context::Ready);
 		}
 		else if (c == '$')
 		{
