@@ -20,6 +20,7 @@ bool Preprocessor::getProcessedCmd(ScriptSource &source, StringList &dest)
 	std::string cmd;
 	if (getLine(cmd))
 	{
+//		std::cerr << "DEBUG: Got line: " << cmd << std::endl;
 		dest = process(cmd);
 		return true;
 	}
@@ -80,6 +81,13 @@ StringList Preprocessor::process(const std::string &_cmd)
 
 		std::string current;
 
+		if (cmd[i] == '~' &&
+				(i + 1 >= cmd.size() || isspace(cmd[i + 1]) || cmd[i + 1] == '/'))
+		{
+			++i;
+			current.append(Environment::getInstance()->getHome());
+		}
+
 		while (i < cmd.size())
 		{
 			if (cmd[i] == '\'')
@@ -130,7 +138,7 @@ StringList Preprocessor::process(const std::string &_cmd)
 						std::string name;
 						++i;
 						while (cmd[i] != '}')
-							name.push_back(cmd[i]);
+							name.push_back(cmd[i++]);
 						assert(i < cmd.size() && cmd[i] == '}');
 						current.append(context->getVar(name));
 						++i;
@@ -148,7 +156,10 @@ StringList Preprocessor::process(const std::string &_cmd)
 				}
 			}
 			else if (cmd[i] == '"')
+			{
 				isInStr = ! isInStr;
+				++i;
+			}
 			else if (isspace(cmd[i]))
 			{
 				if (isInStr)
@@ -272,7 +283,12 @@ bool Preprocessor::getLine(std::string &str)
 			if (getChar(c))
 			{
 				if (c == '\n')
+				{
 					result.pop_back();
+					// Sao cao zuo
+					if (getChar(c))
+						putBack(c);
+				}
 				else
 					result.push_back(c);
 			}

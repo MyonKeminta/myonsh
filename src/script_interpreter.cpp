@@ -163,7 +163,7 @@ void ScriptInterpreter::cd(const StringList &args)
 	if (Environment::getInstance()->chdir(target))
 	{
 		context.setLastExitCode(errno);
-		Log::LogErrorByErrno("cd: ");
+		Log::LogErrorByErrno("cd");
 	}
 	else
 		context.setLastExitCode(0);
@@ -228,7 +228,7 @@ void ScriptInterpreter::createProcess(const char *path, const char * const *args
 		Environment::getInstance()->doUntrap();
 		execvp(path, (char * const *)args);
 		int err = errno;
-		Log::LogErrorByErrno((std::string(path) + ": ").c_str());
+		Log::LogErrorByErrno(path);
 		exit(err);
 	}
 }
