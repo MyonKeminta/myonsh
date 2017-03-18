@@ -1,0 +1,12 @@
+#!/bin/myonsh
+
+# Color prompt
+eval PS1='\033[38;5;112m\033[1m\u@\h\033(B\033[m:\033[38;5;141m\033[1m\w\033(B\033[m\$ '
+
+# Set alias
+alias ls='ls --color=auto'
+
+alias ll='ls --color=auto -alF'
+alias la='ls --color=auto -A'
+alias l='ls --color=auto -CF'
+
