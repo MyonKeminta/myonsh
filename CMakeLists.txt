@@ -31,3 +31,4 @@ add_executable (myonsh
 set (CMAKE_INSTALL_PREFIX "")
 
 install (TARGETS myonsh DESTINATION bin)
+
