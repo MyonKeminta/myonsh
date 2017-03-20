@@ -38,6 +38,8 @@ private:
 
 	void eval(const StringList &args);
 
+	void history(const StringList &args);
+
 	void createProcess(const char *path, const char *const *args, bool noawait = false);
 
 	void run(const StringList &cmd);

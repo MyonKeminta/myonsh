@@ -81,6 +81,8 @@ StringList Preprocessor::process(const std::string &_cmd)
 
 		std::string current;
 
+		unsigned sectionBegin = i;
+
 		if (cmd[i] == '~' &&
 				(i + 1 >= cmd.size() || isspace(cmd[i + 1]) || cmd[i + 1] == '/'))
 		{
@@ -181,9 +183,11 @@ StringList Preprocessor::process(const std::string &_cmd)
 			}
 			else if (cmd[i] == '&' && !isInStr)
 			{
-				result.push_back(current);
-				result.push_back("&");
+				if (i > sectionBegin)
+					result.push_back(current);
+				current = "&";
 				++i;
+				break;
 			}
 
 			// TODO: Finish this.

@@ -11,7 +11,9 @@
 #include <cerrno>
 #include <cassert>
 #include <regex>
+#include <iomanip>
 #include "cinclude/cunistd.h"
+#include "history.h"
 
 
 ScriptInterpreter::ScriptInterpreter() {}
@@ -201,12 +203,21 @@ void ScriptInterpreter::eval(const StringList &args)
 	}
 	else
 	{
-		//TODO::Implement this/ execp
+		//TODO: run this as a normal command line
 		Log::LogError("eval: feature not implemented");
 		exitCode = 1;
 	}
 
 	context.setLastExitCode(exitCode);
+}
+
+void ScriptInterpreter::history(const StringList &args)
+{
+	auto range = History::getAll();
+	auto it = range.first;
+	auto end = range.second;
+	for (; it != end; ++it)
+		std::cout << std::setw(5) << it - range.first << ' ' << *it << std::endl;
 }
 
 void ScriptInterpreter::createProcess(const char *path, const char * const *args, bool noawait)
@@ -261,6 +272,10 @@ void ScriptInterpreter::run(const StringList &cmd)
 	{
 		eval(cmd);
 	}
+	else if (first == "history")
+	{
+		history(cmd);
+	}
 	else
 	{
 		unsigned size = cmd.size();
@@ -278,7 +293,7 @@ void ScriptInterpreter::run(const StringList &cmd)
 		for (unsigned i = 0; i < size; ++i)
 			args[i] = cmd[i].c_str();
 		args[size] = nullptr;
-		createProcess(args[0], args);
+		createProcess(args[0], args, noawait);
 		delete[] args;
 	}
 

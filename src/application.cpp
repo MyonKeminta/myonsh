@@ -7,6 +7,16 @@
 #include "stream_source.h"
 #include "utils.h"
 #include "cinclude/cunistd.h"
+#include "history.h"
+#include "cstdlib"
+
+
+static std::string historyFile;
+
+static void onExit()
+{
+	History::save(historyFile);
+}
 
 Application *Application::instance = nullptr;
 
@@ -21,8 +31,8 @@ int Application::run(const std::vector<std::string> &args)
 {
 	Environment::initWithArgs(args);
 
-//	interactive = !Environment::getInstance()->isInputRedirected();
-	interactive = true;
+	interactive = !Environment::getInstance()->isInputRedirected();
+//	interactive = true;
 
 	std::string file;
 
@@ -63,6 +73,13 @@ int Application::run(const std::vector<std::string> &args)
 			command = "source " + file;
 		else
 			command = "";
+
+		historyFile = Environment::getInstance()->getHome() + "/.myonsh_history";
+
+		History::tryLoad(historyFile);
+
+		atexit(onExit);
+
 		return interpreter.interactive(command);
 	}
 	else

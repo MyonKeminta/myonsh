@@ -39,6 +39,7 @@ public:
 	InteractiveSource(const Context &context, std::istream &is)
 		: context(&context), StreamSource(is) {}
 
+//	deprecated version 1
 //	bool getLine(std::string &str) override
 //	{
 //		printPrompt();
@@ -49,29 +50,38 @@ public:
 //		}
 //		return false;
 //	}
-	bool getChar(char &c) override
-	{
-		if(newLine)
-			printPrompt();
 
-		bool result = StreamSource::getChar(c);
-		newLine = '\n' == c;
-		return result;
-	}
+
+//  deprecated version 2 (ni ta ma de
+//	bool getChar(char &c) override
+//	{
+//		if(newLine)
+//			printPrompt();
+
+//		bool result = StreamSource::getChar(c);
+//		newLine = '\n' == c;
+//		return result;
+//	}
+
+	bool getChar(char &c) override;
 
 
 private:
 
 	void printPrompt()
 	{
-		std::cout << context->getPrompt() << std::flush;
+		std::cerr << context->getPrompt() << std::flush;
 	}
 
 //	void tryExpandAlias(std::stirng &str);
 
-	bool newLine = true;
+//	bool newLine = true;
 
 	const Context *context;
+
+	std::string buffer;
+
+	std::string::size_type cursor;
 };
 
 
