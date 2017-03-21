@@ -213,15 +213,31 @@ void ScriptInterpreter::eval(const StringList &args)
 
 void ScriptInterpreter::history(const StringList &args)
 {
-	auto range = History::getAll();
+	History::ConstStringListRange range;
+	if (args.size() <= 1)
+		range = History::getAll();
+	else
+	{
+		int count;
+		try {
+			count = std::stoi(args[1]);
+		} catch (const std::exception &ex)
+		{
+			Log::LogError("history: needs numeric arguments");
+			context.setLastExitCode(1);
+			return;
+		}
+		range = History::getRecent(count);
+	}
 	auto it = range.first;
 	auto end = range.second;
-	int count = range.second - range.first;
+	int count = History::getCurrentCount();
 	int width = 1;
 	while (count /= 10)
 		++width;
+	count = History::getCurrentCount();
 	for (; it != end; ++it)
-		std::cout << std::setw(width) << it - range.first + 1 << ' ' << *it << std::endl;
+		std::cout << std::setw(width) << count - (range.second - it) + 1 << ' ' << *it << std::endl;
 }
 
 void ScriptInterpreter::createProcess(const char *path, const char * const *args, bool noawait)
