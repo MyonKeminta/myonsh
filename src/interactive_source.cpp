@@ -69,9 +69,9 @@ bool InteractiveSource::getChar(char &c)
 						while (i < input.size() && isdigit(input[i]))
 							index = index * 10 + (input[i++] - '0');
 						--i;
-						if (index >= History::getCurrentCount())
+						if (index > History::getCurrentCount() || index == 0)
 							throw std::logic_error("!" + std::to_string(index) + ": event not found");
-						buffer.append(History::getNthItem(index));
+						buffer.append(History::getNthItem(index - 1));
 					}
 					else if (input[i] == '-' && i + 1 < input.size() && isdigit(input[i+1]))
 					{
@@ -79,11 +79,11 @@ bool InteractiveSource::getChar(char &c)
 						++i;
 						int index = 0;
 						while (i < input.size() && isdigit(input[i]))
-							index = 10 * index + (input[i] - '0');
+							index = 10 * index + (input[i++] - '0');
 						--i;
-						if (index >= History::getCurrentCount())
+						if (index > History::getCurrentCount() || index == 0)
 							throw std::logic_error("!-" + std::to_string(index) + ": event not found");
-						buffer.append(History::getNthItemCountedFromBack(index));
+						buffer.append(History::getNthItemCountedFromBack(index - 1));
 					}
 					else
 					{

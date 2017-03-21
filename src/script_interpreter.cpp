@@ -216,8 +216,12 @@ void ScriptInterpreter::history(const StringList &args)
 	auto range = History::getAll();
 	auto it = range.first;
 	auto end = range.second;
+	int count = range.second - range.first;
+	int width = 1;
+	while (count /= 10)
+		++width;
 	for (; it != end; ++it)
-		std::cout << std::setw(5) << it - range.first << ' ' << *it << std::endl;
+		std::cout << std::setw(width) << it - range.first + 1 << ' ' << *it << std::endl;
 }
 
 void ScriptInterpreter::createProcess(const char *path, const char * const *args, bool noawait)
